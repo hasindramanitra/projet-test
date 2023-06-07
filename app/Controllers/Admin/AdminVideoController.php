@@ -130,4 +130,32 @@ class AdminVideoController extends BaseController
         }
         return $this->respond($result);
     }
+
+    public function delete($id)
+    {
+        $video = new VideoModel();
+        $findVideo = $video->find($id);
+        if($findVideo)
+        {
+            if($this->request->getMethod() == 'delete')
+            {
+                $oneVideo = new VideoModel();
+                $deleteVideo = $oneVideo->delete($id);
+                if($deleteVideo)
+                {
+                    $result = [
+                        'status'=>201,
+                        'data'=>'Deleted successfully'
+                    ];
+                }
+            }
+           
+        }else{
+            $result = [
+                'status'=>201,
+                'data'=>'Video not found'
+            ];
+        }
+        return $this->respond($result);
+    }
 }
