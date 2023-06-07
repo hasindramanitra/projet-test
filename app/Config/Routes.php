@@ -36,6 +36,7 @@ $routes->match(['get','put'], '/(:num)', 'Home::update/$1');
 $routes->delete('/(:num)', 'Home::delete/$1');
 $routes->get('/Admin/video', 'Admin\AdminVideoController::index');
 $routes->match(['get', 'post'], '/Admin/video/create', 'Admin\AdminVideoController::create');
+$routes->match(['get', 'put'], '/Admin/video/update/(:num)', 'Admin\AdminVideoController::update/$1');
 
 
 /*
