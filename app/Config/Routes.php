@@ -29,16 +29,39 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
-$routes->get('/show', 'Home::show');
-$routes->match(['get', 'post'], '/create', 'Home::create');
-$routes->match(['get','put'], '/(:num)', 'Home::update/$1');
-$routes->delete('/(:num)', 'Home::delete/$1');
-$routes->get('/Admin/video', 'Admin\AdminVideoController::index');
-$routes->match(['get', 'post'], '/Admin/video/create', 'Admin\AdminVideoController::create');
-$routes->match(['get', 'put'], '/Admin/video/update/(:num)', 'Admin\AdminVideoController::update/$1');
-$routes->match(['get', 'delete'],'/Admin/video/(:num)', 'Admin\AdminVideoController::delete/$1');
 
+    
+    $routes->get('/Admin/AllCategory', 'Admin\AdminCategoryController::index');
+    $routes->match(['get', 'post'], '/Admin/CreateCategory', 'Admin\AdminCategoryController::create');
+    $routes->match(['get', 'post'], '/Admin/UpdateCategory/(:num)', 'Admin\AdminCategoryController::update/$1');
+    $routes->get('/Admin/DeleteCategory/(:num)', 'Admin\AdminCategoryController::delete/$1');
+    
+    $routes->match(['get', 'post'], '/Admin/CreateVideo', 'Admin\AdminVideoController::create');
+    $routes->match(['get', 'post'], '/Admin/UpdateVideo/(:num)', 'Admin\AdminVideoController::update/$1');
+    $routes->get('/Admin/DeleteVideo/(:num)', 'Admin\AdminVideoController::delete/$1');
+    $routes->get('/Admin/AllModePaiement', 'Admin\AdminModePaiementController::index');
+    $routes->match(['get', 'post'], '/Admin/CreateModePaiement', 'Admin\AdminModePaiementController::create');
+    $routes->match(['get', 'post'], '/Admin/UpdateModePaiement/(:num)', 'Admin\AdminModePaiementController::update/$1');
+    $routes->get('/Admin/DeleteModePaiement/(:num)', 'Admin\AdminModePaiementController::delete/$1');
+    $routes->get('/Admin/AllCommande', 'Admin\AdminCommandeController::index');
+    $routes->get('/Admin/DeleteCommande/(:num)', 'Admin\AdminCommandeController::delete/$1');
+    $routes->get('/Admin/AllClient', 'Admin\AdminClientController::index');
+    $routes->get('/Admin/DeleteClient/(:num)', 'Admin\AdminClientController::delete/$1');
+    
+
+
+$routes->get('/', 'Home::index');
+$routes->match(['get', 'post'], '/Admin/login', 'Admin\SecurityController::login');
+$routes->get('/Admin/AllVideo', 'Admin\AdminVideoController::index');
+
+//make command of client
+$routes->get('/AllVideo', 'VideoController::index');
+$routes->get('/Add/(:num)', "CommandeController::addCommande/$1");
+$routes->get('/commande', "CommandeController::commande");
+$routes->post('/commande', "CommandeController::commande");
+$routes->get('/Remove/(:num)', "CommandeController::removeCommande/$1");
+$routes->get('/DeleteCommande/(:num)', "CommandeController::delete/$1");
+$routes->get('/DeleteAllCommande',"CommandeController::deleteAll");
 /*
  * --------------------------------------------------------------------
  * Additional Routing

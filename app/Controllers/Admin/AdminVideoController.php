@@ -1,134 +1,122 @@
-<?php
+<?php 
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\CategorieModel;
 use App\Models\VideoModel;
-use CodeIgniter\API\ResponseTrait;
 
 class AdminVideoController extends BaseController
 {
-    use ResponseTrait;
-
+    public function __construct()
+    {
+        helper('form');
+    }
     public function index()
     {
-        $allVideo = new VideoModel();
-        $videos = $allVideo->findAll();
-        if(!empty($videos))
+        $videos  = new VideoModel();
+        $allVideos = $videos->findAll();
+        if($allVideos)
         {
-            $result = [
-                'status'=>201,
-                'data'=>$videos
-            ];
+            return view('Admin/videos/index', [
+                'videos'=>$allVideos
+            ]);
         }else{
-            $result = [
-                'status'=>404,
-                'data'=>'No record found in database'
-            ];
+            echo 'No videos found';
         }
-        return $this->respond($result);
     }
-
     public function create()
     {
+        $categories = new CategorieModel();
+        $data =[];
+        $data['validation'] = null;
         if($this->request->getMethod() == 'post')
         {
+            
             if($this->validate([
-                'TITLE'=>'required|min_length[4]',
-                'TIME'=>'required|min_length[5]',
+                'TITLE'=>'required|min_length[3]',
+                'TIME'=>'required',
                 'PRICE'=>'required|numeric|is_natural_no_zero',
-                'DESCRIPTION'=>'required',
+                'DESCRIPTION'=>'required|min_length[10]',
+                'IMAGE'=>'uploaded[IMAGE]',
                 'CATEGORIE_ID'=>'required'
-            ]))
-            {
-                $title = $this->request->getVar('TITLE');
-                $time = $this->request->getVar('TIME');
-                $price = $this->request->getVar('PRICE');
-                $description = $this->request->getVar('DESCRIPTION');
-                $categorie = $this->request->getVar('CATEGORIE_ID');
-
-                $data = [
-                    'TITLE'=>$title,
-                    'TIME'=>$time,
-                    'PRIX'=>$price,
-                    'DESCRIPTION'=>$description,
-                    'CATEGORIE_ID'=>$categorie
-                ];
-
-                $newVideo = new VideoModel();
-                $newVideo->insert($data);
-                if($newVideo->insert($data))
+            ])){
+                $image = $this->request->getFile('IMAGE');
+                if($image->isValid() && !$image->hasMoved())
                 {
-                    $result = [
-                        'status'=>201,
-                        'data'=>'video inserted successfully'
+                   
+                    $newName = $image->getRandomName();
+                    $image->move('Uploads/',$newName);
+                    $data = [
+                        'TITLE'=>$this->request->getVar('TITLE'),
+                        'TIME'=>$this->request->getVar('TIME'),
+                        'PRICE'=>$this->request->getVar('PRICE'),
+                        'DESCRIPTION'=>$this->request->getVar('DESCRIPTION'),
+                        'IMAGE'=>$newName,
+                        'CATEGORIE_ID'=>$this->request->getVar('CATEGORIE_ID')
                     ];
-                }else{
-                    $result = [
-                        'status'=>404,
-                        'data'=>'Some Error found'
-                    ];
+                    $video = new VideoModel();
+                    $video->insert($data);
+                    return redirect('Admin/AllVideo')->with('status', 'video inserted successfully');
                 }
-
+                
+            }else{
+                $data['validation'] = $this->validator;
             }
-            return $this->respond($result);
         }
+        return view('Admin/videos/new', [
+            'categories'=>$categories->findAll()
+        ]);
     }
 
     public function update($id)
     {
+        $categories = new CategorieModel();
+        $data =[];
+        $data['validation'] = null;
         $oneVideo = new VideoModel();
         $findVideo = $oneVideo->find($id);
         if($findVideo)
         {
-            $result = [
-                'status'=>201,
-                'data'=>$findVideo
-            ];
-            if($this->request->getMethod() == 'put')
+            if($this->request->getMethod() == 'post')
             {
                 if($this->validate([
-                    'TITLE'=>'required|min_length[4]',
-                    'TIME'=>'required|min_length[5]',
+                    'TITLE'=>'required|min_length[3]',
+                    'TIME'=>'required',
                     'PRICE'=>'required|numeric|is_natural_no_zero',
-                    'DESCRIPTION'=>'required',
+                    'DESCRIPTION'=>'required|min_length[10]',
+                    'IMAGE'=>'uploaded[IMAGE]',
                     'CATEGORIE_ID'=>'required'
                 ])){
-                    $title = $this->request->getVar('TITLE');
-                    $time = $this->request->getVar('TIME');
-                    $price = $this->request->getVar('PRICE');
-                    $description = $this->request->getVar('DESCRIPTION');
-                    $categorie = $this->request->getVar('CATEGORIE_ID');
-
-                    $updataData = [
-                        'TITLE'=>$title,
-                        'TIME'=>$title,
-                        'PRICE'=>$price,
-                        'DESCRIPTION'=>$description,
-                        'CATEGORIE_ID'=>$categorie
-                    ];
-                    $updateVideo = new VideoModel();
-                    $updateVideo->update($id, $updataData);
-                    if($updateVideo->update($id, $updataData))
+                    $image = $this->request->getFile('IMAGE');
+                    if($image->isValid() && !$image->hasMoved())
                     {
-                        $result = [
-                            'status'=>201,
-                            'data'=>'video updated successfully'
+                    
+                        $newName = $image->getRandomName();
+                        $image->move('Uploads/',$newName);
+                        $data = [
+                            'TITLE'=>$this->request->getVar('TITLE'),
+                            'TIME'=>$this->request->getVar('TIME'),
+                            'PRICE'=>$this->request->getVar('PRICE'),
+                            'DESCRIPTION'=>$this->request->getVar('DESCRIPTION'),
+                            'IMAGE'=>$newName,
+                            'CATEGORIE_ID'=>$this->request->getVar('CATEGORIE_ID')
                         ];
-                    }else{
-                        $result = [
-                            'status'=>404,
-                            'data'=>'Some error found'
-                        ];
+                        $video = new VideoModel();
+                        $video->update($id,$data);
+                        return redirect('Admin/AllVideo')->with('status', 'video inserted successfully');
                     }
+                }else{
+                    $data['validation'] = $this->validator;
                 }
             }
+            return view('Admin/videos/update', [
+                'categories'=>$categories->findAll(),
+                'video'=>$findVideo
+            ]);
         }else{
-            $result = [
-                'status'=>404,
-                'data'=>'Data not found'
-            ];
+            echo 'video does not exist';
         }
-        return $this->respond($result);
+        
     }
 
     public function delete($id)
@@ -137,25 +125,10 @@ class AdminVideoController extends BaseController
         $findVideo = $video->find($id);
         if($findVideo)
         {
-            if($this->request->getMethod() == 'delete')
-            {
-                $oneVideo = new VideoModel();
-                $deleteVideo = $oneVideo->delete($id);
-                if($deleteVideo)
-                {
-                    $result = [
-                        'status'=>201,
-                        'data'=>'Deleted successfully'
-                    ];
-                }
-            }
-           
+            $video->delete($id);
+            return redirect('Admin/AllVideo')->with('status', 'Deleted successfully');
         }else{
-            $result = [
-                'status'=>201,
-                'data'=>'Video not found'
-            ];
+            echo 'Data Not found';
         }
-        return $this->respond($result);
     }
 }

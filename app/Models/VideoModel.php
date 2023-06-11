@@ -9,5 +9,5 @@ class VideoModel extends Model
     protected $primaryKey = 'ID';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
-    protected $allowedFields = ['TITLE', 'PRICE', 'DESCRIPTION', 'TIME', 'CATEGORIE_ID'];
+    protected $allowedFields = ['TITLE', 'PRICE', 'DESCRIPTION', 'TIME','IMAGE', 'CATEGORIE_ID'];
 }

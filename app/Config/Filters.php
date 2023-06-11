@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\IsAdminFilter;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
@@ -21,6 +22,7 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'isLoggedIn'    => IsAdminFilter::class
     ];
 
     /**
@@ -32,6 +34,8 @@ class Filters extends BaseConfig
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            
+            
         ],
         'after' => [
             'toolbar',
