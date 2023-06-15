@@ -38,4 +38,13 @@ class Facture extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+
+    public function findAllAboutFacture()
+    {
+        $db = \Config\Database::connect();
+        $query = $db->query("select facture.id, facture.commande_id, clients.nom, clients.email, facture.total  from facture left join commande on facture.commande_id = commande.id left join clients on commande.clients_id = clients.id left join details_commandes on commande.id = details_commandes.commande_id");
+
+        return $query->getResultArray();
+    }
 }

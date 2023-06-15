@@ -17,9 +17,10 @@
         <div class="left">
             <?php foreach($videos as $video):?>
                 <div class="video-cart">
-                    <img src="" alt="">
+                    <img src="<?=base_url('Uploads/').$video['IMAGE']?>" height="50px" width="50px">
                     <h3 class="title"><?=$video['TITLE']?></h3>
                     <p class="price"><?=$video['PRICE']?>Ariary</p>
+                    <h4>Disponible:<?=$video['QUANTITE_EN_STOCK']?></h4>
                     <button type="submit"><a href="<?=base_url("Add/".$video['ID'])?>">ADD</a></button>
                 </div>
             <?php endforeach?>

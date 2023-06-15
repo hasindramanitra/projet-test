@@ -30,7 +30,7 @@
                     <td><?=$video['DESCRIPTION']?></td>
                     <td><?=$video['TIME']?></td>
                     <td>
-                        <img src="<?="Uploads/".$video['IMAGE']?>" >
+                        <img src="<?=base_url('Uploads/').$video['IMAGE']?>" height="50px" width="50px">
                     </td>
                     <td><a href="<?=base_url('Admin/UpdateVideo/'.$video['ID'])?>">Update</a></td>
                     <td><a href="<?=base_url('Admin/DeleteVideo/'.$video['ID'])?>">Delete</a></td>

@@ -47,6 +47,8 @@ $routes->set404Override();
     $routes->get('/Admin/DeleteCommande/(:num)', 'Admin\AdminCommandeController::delete/$1');
     $routes->get('/Admin/AllClient', 'Admin\AdminClientController::index');
     $routes->get('/Admin/DeleteClient/(:num)', 'Admin\AdminClientController::delete/$1');
+    $routes->get('/Admin/DetailsCommande/(:num)','Admin\AdminCommandeController::DetailsCommande/$1');
+    $routes->get('/Admin/AllFacture', "Admin\AdminFactureController::index");
     
 
 

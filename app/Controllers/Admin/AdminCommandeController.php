@@ -9,11 +9,28 @@ class AdminCommandeController extends BaseController
     public function index()
     {
         $commande = new CommandeModel();
-        $allCommande = $commande->findAll();
+        $allCommande = $commande->findAllAboutCommandeAndClient();
+        //dd($allCommande);
         return view('Admin/Commande/index', [
             'commande'=>$allCommande
         ]);
     }
+
+    public function DetailsCommande($id)
+    {
+        $detailsCommande = new CommandeModel();
+        $result = $detailsCommande->findAllAboutCommandeById($id);
+        if($result)
+        {
+            return view('Admin/Commande/more', [
+                'details'=>$result
+            ]);
+        }else{
+            echo 'erreur';
+        }
+    }
+
+
 
     public function delete($id)
     {

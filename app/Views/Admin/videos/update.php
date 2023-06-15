@@ -18,12 +18,13 @@
         <label for="DESCRIPTION">Description</label>
         <input type="text" name="DESCRIPTION" value="<?=$video['DESCRIPTION']?>">
         <label for="IMAGE">Image</label>
-        <input type="file" name="IMAGE" value="<?=$video['IMAGE']?>">
+        <img src="<?=base_url('Uploads/').$video['IMAGE']?>" height="50px" width="50px">
+        <input type="file" name="IMAGE" value="<?=base_url('Uploads/').$video['IMAGE']?>">
         <label for="CATEGORIE_ID">Categorie</label>
         <?php foreach($categories as $categorie):?>
-            <input type="radio" name="CATEGORIE_ID" value="<?=$categorie['ID']?>"><?=$categorie['NOM']?>
+            <input type="radio" name="CATEGORIE_ID" <?php echo ($video['CATEGORIE_ID'] == $categorie['ID'] ? 'checked' : null); ?> value="<?=$categorie['ID']?>"><?=$categorie['NOM']?>
         <?php endforeach?>
         <button type="submit">Save</button>
-    <?form_close()?>
+    <?=form_close()?>
 </body>
 </html>

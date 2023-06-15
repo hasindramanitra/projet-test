@@ -63,7 +63,9 @@ class CommandeController extends BaseController
                 $email = $this->request->getVar('EMAIL');
                 
                 $is_email = $client->where('EMAIL', $email)->first();
-                if($is_email)
+                $video = new VideoModel();
+                $is_video = $video->where('ID', $oneVideo['ID'])->first();
+                if($is_email && ($is_video['QUANTITE_EN_STOCK'] > $quantite))
                 {
                     $commande = new CommandeModel();
                     $dataCommande = [
@@ -84,6 +86,12 @@ class CommandeController extends BaseController
                         ];
                         $total +=$value['videos']['PRICE'] * $quantite;
                         $detailsCommande->insert($dataDetails);
+                        $dataVideo = [
+                                'QUANTITE_EN_STOCK'=>$is_video['QUANTITE_EN_STOCK'] - $value['quantite']
+                        ];
+                        $updateVideo = $video->update($is_video['ID'], $dataVideo);
+                        
+                        
                     }
                     $facture = new Facture();
                     $moneyClient = $this->request->getVar('MONEY');
@@ -91,7 +99,7 @@ class CommandeController extends BaseController
                         'COMMANDE_ID'=>$newCommande,
                         'TOTAL'=>$total,
                         'CLIENT_MONEY'=>$moneyClient,
-                        'REST_MONEY_CLIENT'=>$total - $moneyClient
+                        'REST_MONEY_CLIENT'=>$moneyClient - $total
                     ];
                     $newFacture = $facture->insert($dataFacture);
                     $facturePaiement = new FacturePaiement();
@@ -101,8 +109,10 @@ class CommandeController extends BaseController
                         'MODE_PAIEMENT_ID'=>$modePaiement
                     ];
                     $newFacturePaiement = $facturePaiement->insert($dataFacturePaiement);
+                    session()->set("panier", []);
+                    return redirect()->to('AllVideo');
 
-                }else{
+                }else if(!$is_email && ($is_video['QUANTITE_EN_STOCK'] > $quantite)){
                     $nom = $this->request->getVar('NOM');
                     $prenom= $this->request->getVar('PRENOM');
                     $adresse = $this->request->getVar('ADRESSE');
@@ -123,6 +133,7 @@ class CommandeController extends BaseController
                         'CLIENTS_ID'=>$newClient
                     ];
                     $newCommande = $commande->insert($dataCommande);
+                    $total = 0;
                     foreach ($dataPanier as $key => $value) {
                         $produits_id= $value['videos']['ID'];
                         $total_price = $value['videos']['PRICE']*$value['quantite'];
@@ -131,20 +142,24 @@ class CommandeController extends BaseController
                         $dataDetails = [
                             'COMMANDE_ID'=>$newCommande,
                             'PRODUIT_ID'=>$produits_id,
-                            'TOTAL_PRIX_PRODUIT'=>$total_price,
+                            'TOTAL_PRIX_PRODUITS'=>$total_price,
                             'QUANTITE'=>$quantite
                         ];
                         $total +=$value['videos']['PRICE'] * $quantite;
                         $detailsCommande->insert($dataDetails);
+                        $dataVideo = [
+                            'QUANTITE_EN_STOCK'=>$is_video['QUANTITE_EN_STOCK'] - $value['quantite']
+                        ];
+                        $updateVideo = $video->update($is_video['ID'], $dataVideo);
                     
                 }
                     $facture = new Facture();
                     $moneyClient = $this->request->getVar('MONEY');
                     $dataFacture = [
-                        'COMMAND_ID'=>$newCommande,
+                        'COMMANDE_ID'=>$newCommande,
                         'TOTAL'=>$total,
                         'CLIENT_MONEY'=>$moneyClient,
-                        'REST_MONEY_CLIENT'=>$total - $moneyClient
+                        'REST_MONEY_CLIENT'=>$moneyClient - $total  
                     ];
                     $newFacture = $facture->insert($dataFacture);
                     $facturePaiement = new FacturePaiement();
@@ -154,10 +169,13 @@ class CommandeController extends BaseController
                         'MODE_PAIEMENT_ID'=>$modePaiement
                     ];
                     $newFacturePaiement = $facturePaiement->insert($dataFacturePaiement);
+                    session()->set("panier", []);
+                    return redirect()->to('AllVideo');
                 
+            }else{
+                return redirect('commande')->with('status', 'erreur');
             }
-            session()->set("panier", []);
-            return redirect()->to('AllVideo');
+            
         }
         
     }

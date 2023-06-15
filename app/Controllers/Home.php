@@ -10,22 +10,7 @@ class Home extends BaseController
     use ResponseTrait;
     public function index()
     {
-        $categorie= new CategorieModel();
-        $selectCategorie = $categorie->findAll();
-        if(!empty($selectCategorie))
-        {
-            $result = [
-                'status'=>201,
-                'data'=>$selectCategorie
-            ];
-            
-        }else{
-            $result = [
-                'status'=>404,
-                'data'=>'No data found'
-            ];
-        }
-        return $this->respond($result);
+        return view('welcome_message');
     }
 
     public function create()
