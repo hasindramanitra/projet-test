@@ -65,7 +65,8 @@ class CommandeController extends BaseController
                 $is_email = $client->where('EMAIL', $email)->first();
                 $video = new VideoModel();
                 $is_video = $video->where('ID', $oneVideo['ID'])->first();
-                if($is_email && ($is_video['QUANTITE_EN_STOCK'] > $quantite))
+                
+                if($is_email && ($is_video['QUANTITE_EN_STOCK'] >= $quantite))
                 {
                     $commande = new CommandeModel();
                     $dataCommande = [
@@ -73,9 +74,10 @@ class CommandeController extends BaseController
                     ];
                     $newCommande = $commande->insert($dataCommande);
                     $total=0;
-                    foreach ($dataPanier as $key => $value) {
+                    foreach ($dataPanier as $value) {
                         $produits_id= $value['videos']['ID'];
                         $total_price = $value['videos']['PRICE']*$value['quantite'];
+                        $quantite_en_stock = $value['videos']['QUANTITE_EN_STOCK'] - $value['quantite'];
                         $quantite = $value['quantite'];
                         $detailsCommande = new DetailsCommandes();
                         $dataDetails = [
@@ -86,10 +88,12 @@ class CommandeController extends BaseController
                         ];
                         $total +=$value['videos']['PRICE'] * $quantite;
                         $detailsCommande->insert($dataDetails);
+                        $video = new VideoModel();
+                        $isVideo = $video->where('ID', $value['videos']['ID'])->first();
                         $dataVideo = [
-                                'QUANTITE_EN_STOCK'=>$is_video['QUANTITE_EN_STOCK'] - $value['quantite']
+                            'QUANTITE_EN_STOCK'=>$quantite_en_stock
                         ];
-                        $updateVideo = $video->update($is_video['ID'], $dataVideo);
+                        $updateVideo = $video->update($isVideo['ID'], $dataVideo);
                         
                         
                     }
@@ -112,7 +116,7 @@ class CommandeController extends BaseController
                     session()->set("panier", []);
                     return redirect()->to('AllVideo');
 
-                }else if(!$is_email && ($is_video['QUANTITE_EN_STOCK'] > $quantite)){
+                }else if(!$is_email && ($is_video['QUANTITE_EN_STOCK'] >= $quantite)){
                     $nom = $this->request->getVar('NOM');
                     $prenom= $this->request->getVar('PRENOM');
                     $adresse = $this->request->getVar('ADRESSE');
@@ -134,10 +138,12 @@ class CommandeController extends BaseController
                     ];
                     $newCommande = $commande->insert($dataCommande);
                     $total = 0;
-                    foreach ($dataPanier as $key => $value) {
+                    foreach ($dataPanier as $value) {
                         $produits_id= $value['videos']['ID'];
                         $total_price = $value['videos']['PRICE']*$value['quantite'];
+                        $quantite_en_stock = $value['videos']['QUANTITE_EN_STOCK'] - $value['quantite'];
                         $quantite = $value['quantite'];
+                        $quantite_en_stock = $is_video['QUANTITE_EN_STOCK'] - $value['quantite'];
                         $detailsCommande = new DetailsCommandes();
                         $dataDetails = [
                             'COMMANDE_ID'=>$newCommande,
@@ -147,10 +153,12 @@ class CommandeController extends BaseController
                         ];
                         $total +=$value['videos']['PRICE'] * $quantite;
                         $detailsCommande->insert($dataDetails);
+                        $video = new VideoModel();
+                        $isVideo = $video->where('ID', $value['videos']['ID'])->first();
                         $dataVideo = [
-                            'QUANTITE_EN_STOCK'=>$is_video['QUANTITE_EN_STOCK'] - $value['quantite']
+                            'QUANTITE_EN_STOCK'=>$quantite_en_stock
                         ];
-                        $updateVideo = $video->update($is_video['ID'], $dataVideo);
+                        $updateVideo = $video->update($isVideo['ID'], $dataVideo);
                     
                 }
                     $facture = new Facture();

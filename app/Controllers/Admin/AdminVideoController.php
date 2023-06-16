@@ -123,12 +123,14 @@ class AdminVideoController extends BaseController
     {
         $video = new VideoModel();
         $findVideo = $video->find($id);
-        if($findVideo)
+        $findAllRelatedVideo = $video->findAllRelatedVideo($id);
+        if($findVideo && $findAllRelatedVideo)
         {
-            $video->delete($id);
-            return redirect('Admin/AllVideo')->with('status', 'Deleted successfully');
-        }else{
-            echo 'Data Not found';
+            return redirect('Admin/AllVideo')->with('status', "you can delete that video because it's related to a command");
+        }else if($findVideo && !$findAllRelatedVideo){
+            $video = new VideoModel();
+            $deletedVideo = $video->delete($id);
+            return redirect('Admin/AllVideo')->with('status', "Video deleted successfully");
         }
     }
 }

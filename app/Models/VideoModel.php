@@ -21,6 +21,14 @@ class VideoModel extends Model
         return $query;
     }
     
+    public function findAllRelatedVideo(int $id)
+    {
+        $db = \Config\Database::connect();
+        $query = $db->query("select * from details_commandes left join videos on details_commandes.produit_id = videos.id where videos.id=".$id);
+        $result = $query->getResult();
+
+        return $result;
+    }
 
 
     
