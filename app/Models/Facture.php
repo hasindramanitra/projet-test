@@ -47,4 +47,12 @@ class Facture extends Model
 
         return $query->getResultArray();
     }
+
+    public function findAllAboutFactureById(int $id)
+    {
+        $db = \Config\Database::connect();
+        $query = $db->query("select facture.id,total_prix_produits, quantite,details_commandes.quantite, videos.title from facture left join commande on facture.commande_id = commande.ID left join details_commandes on commande.ID = details_commandes.commande_id left join videos on details_commandes.produit_id = videos.id where commande.ID"."=".$id);
+
+        return $query->getResultArray();
+    }
 }

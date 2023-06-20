@@ -9,19 +9,19 @@
 <body>
     <h1>New video</h1>
     <?=form_open_multipart()?>
-        <label for="TITLE">Enter the title</label>
-        <input type="text" name="TITLE" >
-        <label for="TIME">Enter the time of video</label>
-        <input type="text" name="TIME" >
-        <label for="PRICE">Enter the price</label>
-        <input type="number" name="PRICE" >
-        <label for="DESCRIPTION">Enter the description</label>
-        <input type="text" name="DESCRIPTION" >
-        <label for="IMAGE">Enter the image of video</label>
-        <input type="file" name="IMAGE" >
-        <label for="CATEGORIE_ID">Choose the categorie of video</label>
+        <label for="TITLE">Enter the title</label><br>
+        <input type="text" name="TITLE" ><br>
+        <label for="TIME">Enter the time of video</label><br>
+        <input type="text" name="TIME" ><br>
+        <label for="PRICE">Enter the price</label><br>
+        <input type="number" name="PRICE" ><br>
+        <label for="DESCRIPTION">Enter the description</label><br>
+        <input type="text" name="DESCRIPTION" ><br>
+        <label for="IMAGE">Enter the image of video</label><br>
+        <input type="file" name="IMAGE" ><br>
+        <label for="CATEGORIE_ID">Choose the categorie of video</label><br>
         <?php foreach($categories as $categorie):?>
-            <input type="radio" name="CATEGORIE_ID" value="<?=$categorie['ID']?>"><?=$categorie['NOM']?>
+            <input type="radio" name="CATEGORIE_ID" value="<?=$categorie['ID']?>"><?=$categorie['NOM']?><br>
         <?php endforeach?>
         <button type="submit">Save</button>
     <?=form_close()?>

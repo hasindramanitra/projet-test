@@ -14,4 +14,19 @@ class AdminFactureController extends BaseController
             'factures'=>$allFacture
         ]);
     }
+
+    /*public function more($id)
+    {
+        $facture = new Facture();
+        $findFacture = $facture->find($id);
+        $findAllAboutFactureById = $facture->findAllAboutFactureById($id);
+        if($findFacture && $findAllAboutFactureById)
+        {
+            return view('Admin/Facture/more', [
+                'allAboutFactures'=>$findAllAboutFactureById
+            ]);
+        }else{
+            echo 'erreur';
+        }
+    }*/
 }

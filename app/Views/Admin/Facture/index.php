@@ -26,7 +26,7 @@
                     <td><?=$facture['nom']?></td>
                     <td><?=$facture['email']?></td>
                     <td><?=$facture['total']?></td>
-                    <td><a href="#">Delete</a></td>
+                    <td><a href="<?=base_url("Admin/Facture/".$facture['id'])?>">See more</a></td>
                 </tr>
             <?php endforeach?>
         </tbody>
