@@ -15,7 +15,7 @@ class AdminFactureController extends BaseController
         ]);
     }
 
-    /*public function more($id)
+    public function more($id)
     {
         $facture = new Facture();
         $findFacture = $facture->find($id);
@@ -23,10 +23,11 @@ class AdminFactureController extends BaseController
         if($findFacture && $findAllAboutFactureById)
         {
             return view('Admin/Facture/more', [
-                'allAboutFactures'=>$findAllAboutFactureById
+                'allAboutFactures'=>$findAllAboutFactureById,
+                'total'=>$facture->findTotal($id)
             ]);
         }else{
             echo 'erreur';
         }
-    }*/
+    }
 }
